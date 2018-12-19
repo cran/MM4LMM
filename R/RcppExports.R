@@ -5,34 +5,37 @@
   .Call('_MM4LMM_chol_inverse', PACKAGE = 'MM4LMM', X)
 }
 
-.MM_ML2MatRcpp <- function(Y, X, U, D, Init, MaxIter, Crit) {
-  .Call('_MM4LMM_MM_ML2MatRcpp', PACKAGE = 'MM4LMM', Y, X, U, D, Init, MaxIter, Crit)
+.MM_ML2MatRcpp <- function(Y, X, U, D, Init, MaxIter, CritVar , CritLogLik) {
+  .Call('_MM4LMM_MM_ML2MatRcpp', PACKAGE = 'MM4LMM', Y, X, U, D, Init, MaxIter, CritVar , CritLogLik)
 }
 
-.MLMM <- function(Y, X, VarList, Init, MaxIter, Crit) {
-  .Call('_MM4LMM_MLMM', PACKAGE = 'MM4LMM', Y, X, VarList, Init, MaxIter, Crit)
+.MLMM <- function(Y, X, VarList, Init, MaxIter, CritVar , CritLogLik) {
+  .Call('_MM4LMM_MLMM', PACKAGE = 'MM4LMM', Y, X, VarList, Init, MaxIter, CritVar , CritLogLik)
 }
 
 .PrepMat <- function(Y, K1, K2) {
   .Call('_MM4LMM_PrepMat', PACKAGE = 'MM4LMM', Y, K1, K2)
 }
 
-.MM_Reml2MatRcpp <- function(Y, X, U, D, Init, MaxIter, Crit) {
-  .Call('_MM4LMM_MM_Reml2MatRcpp', PACKAGE = 'MM4LMM', Y, X, U, D, Init, MaxIter, Crit)
+.MM_Reml2MatRcpp <- function(Y, X, U, D, Init, MaxIter, CritVar , CritLogLik) {
+  .Call('_MM4LMM_MM_Reml2MatRcpp', PACKAGE = 'MM4LMM', Y, X, U, D, Init, MaxIter, CritVar , CritLogLik)
 }
 
-.RemlMM <- function(Y, X, VarList, Init, MaxIter, Crit) {
-  .Call('_MM4LMM_RemlMM', PACKAGE = 'MM4LMM', Y, X, VarList, Init, MaxIter, Crit)
+.RemlMM <- function(Y, X, VarList, Init, MaxIter, CritVar , CritLogLik) {
+  .Call('_MM4LMM_RemlMM', PACKAGE = 'MM4LMM', Y, X, VarList, Init, MaxIter, CritVar , CritLogLik)
 }
 
-.RemlMMHen <- function(Y, X, Z, GList, GinvList, Rinv, logdetV, Init, MaxIter, Crit) {
-  .Call('_MM4LMM_RemlMMHen', PACKAGE = 'MM4LMM', Y, X, Z, GList, GinvList, Rinv, logdetV, Init, MaxIter, Crit)
+.RemlMMHen <- function(Y, X, Z, GList, GinvList, Rinv, logdetV, Init, MaxIter, CritVar , CritLogLik) {
+  .Call('_MM4LMM_RemlMMHen', PACKAGE = 'MM4LMM', Y, X, Z, GList, GinvList, Rinv, logdetV, Init, MaxIter, CritVar , CritLogLik)
 }
-.RemlMMHenDiag <- function(Y, X, Z, GList, GinvList, Rinv, logdetV, Init, MaxIter, Crit) {
-  .Call('_MM4LMM_RemlMMHenDiag', PACKAGE = 'MM4LMM', Y, X, Z, GList, GinvList, Rinv, logdetV, Init, MaxIter, Crit)
+.RemlMMHenDiag <- function(Y, X, Z, GList, GinvList, Rinv, logdetV, Init, MaxIter, CritVar , CritLogLik) {
+  .Call('_MM4LMM_RemlMMHenDiag', PACKAGE = 'MM4LMM', Y, X, Z, GList, GinvList, Rinv, logdetV, Init, MaxIter, CritVar , CritLogLik)
 }
 
 .sym_inverseRcpp <- function(X) {
   .Call('_MM4LMM_sym_inverseRcpp', PACKAGE = 'MM4LMM', X)
 }
 
+.RemlMM1Mat <- function(Y, X, VarInv, logdetVar) {
+  .Call('_MM4LMM_RemlMM1Mat', PACKAGE = 'MM4LMM', Y, X, VarInv, logdetVar)
+}

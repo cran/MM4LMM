@@ -18,7 +18,7 @@ typedef Map<MatrixXd> Map_MatrixXd;
 
 
 
-List MM_Reml2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , VectorXd & Init , int MaxIter, double Crit){
+List MM_Reml2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , VectorXd & Init , int MaxIter, double CritVar , double CritLogLik){
         int NbObs(Y.size());
 	MatrixXd X = U*Xinit;
 	int NbCof(Xinit.cols());
@@ -44,14 +44,15 @@ List MM_Reml2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , V
 
 	VectorXd LogLik(MaxIter+20);
         LogLik.setZero();
-        double crit = Crit+1;
+        double crit = CritVar+1;
+  	double critLL = CritLogLik + 1;
         int iteration = 0;
         int it = 0;
 
 	double logdetVar , logdetxVarx , detxVarx;
 	double A,B,C,AB,BC,Delta;
 
-	while(((crit>Crit)&&(iteration<MaxIter))||(it==0)){
+	while((((crit>CritVar)||(critLL>CritLogLik))&&(iteration<MaxIter))||(it==0)){
 		Var = deltaNew * D + I;
 		Var_inv = Var.cwiseInverse();
 
@@ -65,12 +66,13 @@ List MM_Reml2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , V
 
         	InvFixed = Var_inv.asDiagonal() * Y - Varx * ( xVarx_inv * ( Varx.transpose() * Y ) ) ;
 
+        	VectorXd Pdiag = Var_inv - (Varx * xVarx_inv * Varx.transpose()).diagonal();
 
 		A = (Y.transpose() * InvFixed).sum();
 		B = (InvFixed.transpose()*D.asDiagonal() * InvFixed).sum();
 
 
-		MatrixXd T = xVarx_inv.selfadjointView<Lower>() * Varx.transpose() * D.asDiagonal() * Varx;
+    MatrixXd T = xVarx_inv.selfadjointView<Lower>() * Varx.transpose() * D.asDiagonal() * Varx;
 
 		C = D.dot(Var_inv) - T.trace();
 		BC = B*C*pow(deltaNew,2);
@@ -83,11 +85,14 @@ List MM_Reml2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , V
 		SigmaNew(1) = A/(NbObs-NbCof);		
 		SigmaNew(0) = deltaOld * SigmaNew(1);
 
-		LogLik(iteration) = -((NbObs-NbCof)*log(SigmaNew(1)) + logdetxVarx + logdetVar + (Y.transpose() * InvFixed).sum() / SigmaNew(1))/2;
-                
+		
+		LogLik(iteration) = -((NbObs-NbCof)*log(SigmaNew(1)) + logdetxVarx + logdetVar + A / SigmaNew(1))/2;
+   
 		if (iteration > 0){
 			if (LogLik(iteration) < LogLik(iteration - 1)){
-
+			  Rcout << "Aie" << std::endl;
+			  Rcout << "iteration = " << iteration << std::endl;
+			  
 				deltaNew = deltaNewBis;
 				Var = deltaNew * D + I;
 				Var_inv = Var.cwiseInverse();
@@ -139,11 +144,11 @@ List MM_Reml2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , V
 		}
 
 		VectorXd DiffAbs = SigmaNew-SigmaOld;
-		crit = DiffAbs.lpNorm<Infinity>();
+   		crit = DiffAbs.lpNorm<Infinity>();
+    		critLL = LogLik(iteration) - LogLik(iteration-1); 
 		SigmaAnc = SigmaOld;
 
 		iteration ++;
-
 		
 	}
 	Var = deltaNew * D + I;

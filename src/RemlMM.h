@@ -16,7 +16,7 @@ using namespace Eigen;
 typedef Map<MatrixXd> Map_MatrixXd;
 
 
-List MM_RemlRcpp(VectorXd & Y, MatrixXd & X, List & VarList , VectorXd & Init , int MaxIter, double Crit){
+List MM_RemlRcpp(VectorXd & Y, MatrixXd & X, List & VarList , VectorXd & Init , int MaxIter, double CritVar, double CritLogLik){
 	int NbVar(VarList.size()); 
         int NbObs(Y.size());
 	int NbCof(X.cols());
@@ -37,11 +37,12 @@ List MM_RemlRcpp(VectorXd & Y, MatrixXd & X, List & VarList , VectorXd & Init , 
 
 	VectorXd LogLik(MaxIter);
         LogLik.setZero();
-        double crit = Crit+1;
+        double crit = CritVar+1;
+  	double critLL = CritLogLik + 1;
         int iteration = 0;
         int it = 0;
 
-	while(((crit>Crit)&&(iteration<MaxIter))||(it==0)){
+	while((((crit>CritVar)||(critLL>CritLogLik))&&(iteration<MaxIter))||(it==0)){
 
 		Var.setZero();
 		for (int i=0; i<NbVar ; i++){
@@ -109,7 +110,8 @@ List MM_RemlRcpp(VectorXd & Y, MatrixXd & X, List & VarList , VectorXd & Init , 
 
 		VectorXd DiffAbs = SigmaNew-SigmaOld;
 
-               	crit = DiffAbs.lpNorm<Infinity>();   
+   		crit = DiffAbs.lpNorm<Infinity>();
+    		critLL = LogLik(iteration) - LogLik(iteration-1);
                 it ++;
                 if (it == 2 ){
 

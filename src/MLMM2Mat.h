@@ -17,7 +17,7 @@ using namespace Eigen;
 typedef Map<MatrixXd> Map_MatrixXd;
 
 
-List MM_ML2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , VectorXd & Init , int MaxIter, double Crit){
+List MM_ML2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , VectorXd & Init , int MaxIter, double CritVar, double CritLogLik){
 	int NbVar = 2; 
         int NbObs(Y.size());
 	MatrixXd X = U*Xinit;
@@ -38,11 +38,12 @@ List MM_ML2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , Vec
 
 	VectorXd LogLik(MaxIter);
         LogLik.setZero();
-        double crit = Crit+1;
+        double crit = CritVar+1;
+  	double critLL = CritLogLik + 1;
         int iteration = 0;
         int it = 0;
 
-	while((crit>Crit)&&(iteration<MaxIter)){
+	while((((crit>CritVar)||(critLL>CritLogLik))&&(iteration<MaxIter))||(it==0)){
 		Var = SigmaNew(0) * D + SigmaNew(1) * I;
 		Var_inv = Var.cwiseInverse();
 		Varx = Var_inv.asDiagonal() * X ;
@@ -119,7 +120,8 @@ List MM_ML2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , Vec
 
 		VectorXd DiffAbs = SigmaNew-SigmaOld;
 
-                crit = DiffAbs.lpNorm<Infinity>();
+   		crit = DiffAbs.lpNorm<Infinity>();
+    		critLL = LogLik(iteration) - LogLik(iteration-1); 
                 
                 SigmaAnc = SigmaOld;
 

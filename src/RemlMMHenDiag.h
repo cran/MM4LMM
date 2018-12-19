@@ -16,7 +16,7 @@ using namespace Eigen;
 typedef Map<MatrixXd> Map_MatrixXd;
 
 
-List MM_RemlRcppHenDiag(VectorXd & Y, MatrixXd & X, MatrixXd & Z , List & GList , List & GinvList , VectorXd & Rinv , VectorXd logdetV , VectorXd & Init , int MaxIter, double Crit){
+List MM_RemlRcppHenDiag(VectorXd & Y, MatrixXd & X, MatrixXd & Z , List & GList , List & GinvList , VectorXd & Rinv , VectorXd logdetV , VectorXd & Init , int MaxIter, double CritVar, double CritLogLik){
 
 
   int NbVar(GList.size());
@@ -98,13 +98,14 @@ List MM_RemlRcppHenDiag(VectorXd & Y, MatrixXd & X, MatrixXd & Z , List & GList 
   
   VectorXd LogLik(MaxIter);
   LogLik.setZero();
-  double crit = Crit+1;
+  double crit = CritVar+1;
+  double critLL = CritLogLik + 1;
   int iteration = 0;
   int it = 0;
   
 
   
-  while(((crit>Crit)&&(iteration<MaxIter))||(it==0)){
+  while((((crit>CritVar)||(critLL>CritLogLik))&&(iteration<MaxIter))||(it==0)){
     
     int Tmp = 0;
     
@@ -233,7 +234,8 @@ List MM_RemlRcppHenDiag(VectorXd & Y, MatrixXd & X, MatrixXd & Z , List & GList 
 
     VectorXd DiffAbs = SigmaNew-SigmaOld;
     
-    crit = DiffAbs.lpNorm<Infinity>();   
+    crit = DiffAbs.lpNorm<Infinity>();
+    critLL = LogLik(iteration) - LogLik(iteration-1);   
     it ++;
     if (it == 2 ){
       SigmaNewBis = SigmaNew;
@@ -275,7 +277,7 @@ List MM_RemlRcppHenDiag(VectorXd & Y, MatrixXd & X, MatrixXd & Z , List & GList 
   double logdetHen,logdetHeninv;
   sym_inverse(Hen,Hen_inv,logdetHen,logdetHeninv,0);
   
-  MatrixXd VarBeta = Hen_inv.bottomRightCorner(NbCof,NbCof);
+  MatrixXd VarBeta = SigmaOld[NbVar-1]*Hen_inv.bottomRightCorner(NbCof,NbCof);
   
   double LogLikRestrain = LogLik(iteration-1);
   

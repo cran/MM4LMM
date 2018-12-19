@@ -11,7 +11,8 @@ This is the main function of the \cite{MM4LMM} package. It performs inference  i
 }
 \usage{
 MMEst(Y, Cofactor = NULL, X = NULL, formula=NULL, VarList, ZList = NULL, Method = "Reml",
-	Henderson=NULL, Init = NULL, Crit = 0.01, MaxIter = 100, NbCores = 1)
+	Henderson=NULL, Init = NULL, CritVar = 0.001, CritLogLik = 0.001,
+	MaxIter = 100, NbCores = 1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -28,7 +29,7 @@ MMEst(Y, Cofactor = NULL, X = NULL, formula=NULL, VarList, ZList = NULL, Method 
 %%     ~~Describe \code{X} here~~
 }
   \item{formula}{
-	A formula object specifying the fixed effect part of all models separated by + operators.
+	A formula object specifying the fixed effect part of all models separated by + operators. To specify an interaction between \code{Cofactor} and \code{X} use the colnames of \code{X} when it is a list or use "Xeffect" when \code{X} is a matrix.
 %%     ~~Describe \code{formula} here~~
 }
 
@@ -51,9 +52,13 @@ MMEst(Y, Cofactor = NULL, X = NULL, formula=NULL, VarList, ZList = NULL, Method 
 	A vector of initial values for variance parameters (default is \code{NULL})
 %%     ~~Describe \code{Init} here~~
 }
-  \item{Crit}{
-	Value of the criterion to stop iteration. (see Details)
-%%     ~~Describe \code{Crit} here~~
+  \item{CritVar}{
+	Value of the criterion for the variance components to stop iteration. (see Details)
+%%     ~~Describe \code{CritVar} here~~
+}
+  \item{CritLogLik}{
+	Value of the criterion for the log-likelihood to stop iteration. (see Details)
+%%     ~~Describe \code{CritLogLik} here~~
 }
   \item{MaxIter}{
 	Maximum number of iterations per model.
@@ -65,12 +70,12 @@ MMEst(Y, Cofactor = NULL, X = NULL, formula=NULL, VarList, ZList = NULL, Method 
 }
 }
 \details{
-	If \code{X} is NULL, the following model is fitted:
+	If \code{X} is \code{NULL}, the following model is fitted:
 		\deqn{Y = X_C \beta_C + \sum_{k=1}^K Z_k u_k}
 	with \eqn{X_C} the matrix provided in \code{Cofactor}, \eqn{\beta_C} the unknown fixed effects, \eqn{Z_k} the incidence matrix provided for the kth component of \code{ZList} and \eqn{u_k} the kth vector of random effects. If \code{ZList} is unspecified, all incidence matrices are assumed to be the Identity matrix. Random effects are assumed to follow a Gaussian distribution with mean 0 and covariance matrix \eqn{R_k \sigma_k^2}, where \eqn{R_k} is the kth correlation matrix provided in \code{VarList}.
 
 
-	If \code{X} is not NULL, the following model is fitted for each i:
+	If \code{X} is not \code{NULL}, the following model is fitted for each i:
 		\deqn{Y = X_C \beta_C + X_{[i]} \beta_{[i]} + \sum_{k=1}^K Z_k u_k}
 	where \eqn{X_{[i]}} is the incidence matrix corresponding to the ith component (i.e. column if \eqn{X} is a matrix, element otherwise) of \eqn{X}, and \eqn{\beta_{[i]}} is the (unknow) fixed effect associated to \eqn{X_{[i]}}.
 	
@@ -86,8 +91,8 @@ The result is a list where each element corresponds to a fitted model. Each elem
 \item{LogLik (\code{Method}) }{The value of the (restricted, if \code{Method} is "Reml") log-likelihood}
 \item{NbIt }{The number of iterations required to reach the optimum}
 \item{Method }{The method used for the inference}
-
-
+\item{attr }{An integer vector with an entry for each element of \code{Beta} giving the term in \code{Factors} which gave rise to this element (for internal use in the function \code{\link{AnovaTest}})}
+\item{Factors }{Names of each term in the formula}
 %%  ~Describe the value returned
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
@@ -150,7 +155,17 @@ print(ResultVA2)
 
 
 
-#### Example 2: variance component analysis, several models
+#### Example 2: Marker Selection with interaction between Cofactor and X matrix
+Formula <- as.formula('~ Trial+Xeffect+Xeffect:Trial')
+ResultVA3 <- MMEst(Y=DataHybrid$Trait  , Cofactor = DataHybrid,
+                  X = VarianceComponentExample$Markers,
+                   formula = Formula
+                  , ZList = ZL  ,  VarList = VL)
+length(ResultVA3)
+print(ResultVA3[[1]])
+
+
+#### Example 3: QTL detection with two variance components
 data(QTLDetectionExample)
 Pheno <- QTLDetectionExample$Phenotype
 Geno <- QTLDetectionExample$Genotype
@@ -161,7 +176,7 @@ VLgd <- list(Additive=Kinship , Error=diag(1,length(Pheno)))
 
 ##Perform inference
 ResultGD <- MMEst(Y=Pheno , X=Geno
-                  , VarList=VLgd , Crit = 10e-5)
+                  , VarList=VLgd , CritVar = 10e-5)
 
 length(ResultGD)
 print(ResultGD[[1]])

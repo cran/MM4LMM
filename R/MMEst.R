@@ -1,5 +1,5 @@
 MMEst <-
-  function(Y , Cofactor=NULL , X=NULL , formula = NULL , VarList , ZList=NULL , Method="Reml" , Henderson = NULL , Init=NULL , Crit=10e-3 , MaxIter=100 , NbCores=1){
+  function(Y , Cofactor=NULL , X=NULL , formula = NULL , VarList , ZList=NULL , Method="Reml" , Henderson = NULL , Init=NULL , CritVar=1e-3 , CritLogLik = 1e-3 , MaxIter=100 , NbCores=1){
     
     if (Sys.info()[['sysname']]=="Windows"){
       if (NbCores!=1){
@@ -40,7 +40,7 @@ MMEst <-
         }
       }
     }
-    
+
     ## Comparison Y and Var
     #First check for list length
     NbVar <- length(VarList)
@@ -90,7 +90,7 @@ MMEst <-
       formulaComp <- as.formula(paste0("~",paste0(c(CofName,Xname),collapse="+")))
       Factors <- c(CofName,Xname)
     }else{
-      SplitForm <- strsplit(as.character(formula),"\\+")
+      SplitForm <- strsplit(as.character(formula)," \\+ ")
       Factors <- SplitForm[[length(SplitForm)]]
       WhatInX <- unique(unlist(sapply(Xname,function(n) grep(n,Factors))))
       if (length(WhatInX)!=0){
@@ -102,43 +102,40 @@ MMEst <-
     }
     
     
-    Tmp <- model.matrix(formulaCof,data=as.data.frame(Cofactor))
-    QR <- qr(Tmp)
-    FixedNull <- list(cbind(Tmp[,QR$pivot[1:QR$rank]]))
-    
-    if (!is.null(X)){
-      if ((is.data.frame(X))||(is.matrix(X))){
-        ListFixed <- mclapply(1:ncol(X) , function(i){
-          n <- colnames(X)[i]
-          Mat <- Cofactor
-          Mat$Xeffect <- X[,i]
-          Tmp <- model.matrix(formulaComp,data=as.data.frame(Mat))
-          colnames(Tmp) <- gsub("Xeffect",n,colnames(Tmp))
-          colnames(Tmp)[-1] <- paste0(Factors[attr(Tmp,"assign")[-1]],"_:_",colnames(Tmp)[-1])	
-          QR <- qr(Tmp)
-          Fixed <- cbind(Tmp[,QR$pivot[1:QR$rank]])
-          return(Fixed)
-        },mc.cores=NbCores)
-        names(ListFixed) <- colnames(X)
-      }else{
-        ListFixed <- mclapply(X , function(x){
-          Mat <- cbind(Cofactor,x)
-          Tmp <- model.matrix(formulaComp,data=as.data.frame(Mat))
-          colnames(Tmp)[-1] <- paste0(Factors[attr(Tmp,"assign")[-1]],"_:_",colnames(Tmp)[-1])	
-          QR <- qr(Tmp)
-          Fixed <- cbind(Tmp[,QR$pivot[1:QR$rank]])
-          return(Fixed)
-        },mc.cores=NbCores)
-        names(ListFixed) <- names(X)
-      }
-    }else{ 
-      ListFixed <- FixedNull
-    }
     ## Comparaison Init and Var
     if ((length(Init)!=0)*(length(Init)!=NbVar)){
       stop("The length of Init and the number of variance are not compatible")
     }
     
+    
+    ## Choose of the MM program
+    
+    if (NbVar==1){
+	
+	if (NbZ > 0){
+		Rdiag <- isDiagonal(ZList[[NbZ]])&&isDiagonal(VarList[[NbZ]])
+		if (Rdiag){
+			Tmp <- diag(ZList[[1]])^2*diag(VarList[[1]])
+        		VarInv <- 1/VarList[[NbZ]]
+			logdetVar <- sum(log(Tmp))
+		}else{
+		  ptm <- proc.time()
+			Tmp <- .sym_inverseRcpp(tcrossprod( tcrossprod(ZList[[1]] , VarList[[1]]) ,ZList[[1]]))
+			Time <- proc.time()-ptm
+			print(Time)
+			VarInv <- Tmp$inverse
+			logdetVar <- Tmp$log_det
+		}
+	}else{
+		Tmp <- .sym_inverseRcpp(VarList[[1]])
+		VarInv <- Tmp$inverse
+		logdetVar <- Tmp$log_det
+	}
+	rm(Tmp)
+	NamesSigma <- names(VarList)
+	Res <- .MM_Reml1Mat(Y=Y , Cofactor = Cofactor , X = X , formula = formulaComp , Factors=Factors , VarInv=VarInv , logdetVar=logdetVar , NamesSigma = NamesSigma , NbCores=NbCores)
+    }else{
+
     ## Choose of algorithm
     DimVar <- sapply(1:(length(VarList)-1) , function(x) ncol(VarList[[x]]) )
     if (is.null(Henderson)){
@@ -146,12 +143,12 @@ MMEst <-
         Henderson <- FALSE
       }else{
         Henderson <- FALSE
-        if ((length(Y) > sum(DimVar) + ncol(FixedNull[[1]]))) Henderson <- TRUE
+        if ((length(Y) > sum(DimVar) + ncol(Cofactor))) Henderson <- TRUE
       }	    	
     }
     
-    ## Choose of the MM program
-    
+
+
     if (  (NbVar==2) || (!Henderson) || (Method=="ML") ){
       
       
@@ -201,17 +198,17 @@ MMEst <-
       if (length(Init)==0){
         Init <- rep(var(Y)/NbVar,NbVar)
         if (!is.null(X)){
-          Res <- InfMethod(Y=Y , ListX=FixedNull , VarList = VarList , Init = Init , Crit=Crit , MaxIter=MaxIter , NbCores=1)
+          Res <- InfMethod(Y=Y , Cofactor=Cofactor , X=NULL , formula = formulaCof , Factors=Factors , VarList = VarList , Init = Init , CritVar=CritVar , CritLogLik = CritLogLik , MaxIter=MaxIter , NbCores=1)
           Init <- Res[[1]]$Sigma
         }
       }
       
       
       #### Launch of the MM program
-      Res <- InfMethod(Y=Y , ListX=ListFixed , VarList = VarList , Init = Init , Crit=Crit , MaxIter=MaxIter , NbCores=NbCores)
-      if (!is.null(X)){
-        names(Res) <- names(ListFixed)
-      }
+      Res <- InfMethod(Y=Y , Cofactor=Cofactor , X=X , formula = formulaComp , Factors=Factors , VarList = VarList , Init = Init , CritVar=CritVar , CritLogLik = CritLogLik , MaxIter=MaxIter , NbCores=NbCores)
+      # if (!is.null(X)){
+      #   names(Res) <- names(ListFixed)
+      # }
     }else{
       
       invisible(sapply(1:NbZ , function(x) {
@@ -256,19 +253,20 @@ MMEst <-
       if (length(Init)==0){
         Init <- rep(var(Y)/NbVar,NbVar)
         if (!is.null(X)){
-          Res <- InfMethod(Y=Y , ListX=FixedNull , Z = Zg , GList=GList , GinvList = GinvList , Rinv = Rinv , logdetV = logdetV , NameVar = NamesVar , Init = Init , Crit=Crit , MaxIter=MaxIter , NbCores=1)
+          Res <- InfMethod(Y=Y , Cofactor = Cofactor , X=NULL , formula = formulaCof , Factors=Factors , Z = Zg , GList=GList , GinvList = GinvList , Rinv = Rinv , logdetV = logdetV , NameVar = NamesVar , Init = Init , CritVar=CritVar , CritLogLik = CritLogLik , MaxIter=MaxIter , NbCores=1)
           Init <- Res[[1]]$Sigma2
         }
       }
       
       
       #### Launch of the MM program
-      Res <- InfMethod(Y=Y , ListX=ListFixed , Z = Zg , GList=GList , GinvList = GinvList , Rinv = Rinv , logdetV = logdetV , NameVar = NamesVar , Init = Init , Crit=Crit , MaxIter=MaxIter , NbCores=NbCores)
-      if (!is.null(X)){
-        names(Res) <- names(ListFixed)
-      }
+      Res <- InfMethod(Y=Y , Cofactor = Cofactor , X=X , formula = formulaComp , Factors=Factors , Z = Zg , GList=GList , GinvList = GinvList , Rinv = Rinv , logdetV = logdetV , NameVar = NamesVar , Init = Init , CritVar=CritVar , CritLogLik = CritLogLik , MaxIter=MaxIter , NbCores=NbCores)
+      # if (!is.null(X)){
+      #   names(Res) <- names(ListFixed)
+      # }
       
-      
-    }
+
+    }}
+    
     return(Res)
   }

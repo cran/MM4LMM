@@ -36,7 +36,7 @@ AnovaTest(ResMMEst , TestedCombination=NULL , Type = "TypeIII" , NbCores=1)
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-	The output of the function is a list with as many items as in the original input list \code{ResMMEst}. For each item of \code{ResMMEst}, a table is provided that contains the Wald test statistics and p-values for all tested hypotheses. 
+	The output of the function is a list with as many items as in the original input list \code{ResMMEst}. For each item of \code{ResMMEst}, a table is provided that contains the Wald test statistics, p-values and degrees of freedom for all tested hypotheses. 
 %%  ~Describe the value returned
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
@@ -73,6 +73,10 @@ AnovaTest(ResMMEst , TestedCombination=NULL , Type = "TypeIII" , NbCores=1)
 
   ##Compute tests
   AOV <- AnovaTest(Result,Type="TypeI")
+  
+  ##Test specific contrast matrix
+  TC = matrix(c(0,1),nrow=1)
+  AOV2 <- AnovaTest(Result, TestedCombination = TC)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

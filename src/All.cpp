@@ -3,6 +3,7 @@
 #include <RcppEigen.h>
 #include "Inversion.h"
 #include "RemlMM.h"
+#include "RemlMM1Mat.h"
 #include "RemlMMHen.h"
 #include "RemlMMHenDiag.h"
 #include "RemlMM2Mat.h"
@@ -18,11 +19,16 @@ typedef Map<MatrixXd> Map_MatrixXd;
 
 
 //[[Rcpp::export]]
-List RemlMM(VectorXd Y, MatrixXd X , List VarList , VectorXd Init , int MaxIter , double Crit) {
-  List L = MM_RemlRcpp(Y, X, VarList, Init , MaxIter, Crit);
+List RemlMM(VectorXd Y, MatrixXd X , List VarList , VectorXd Init , int MaxIter , double CritVar , double CritLogLik) {
+  List L = MM_RemlRcpp(Y, X, VarList, Init , MaxIter, CritVar, CritLogLik);
   return L;
 }
 
+//[[Rcpp::export]]
+List RemlMM1Mat(VectorXd Y, MatrixXd X , MatrixXd VarInv, double logdetVar) {
+  List L = MM_Reml1MatRcpp(Y, X, VarInv, logdetVar);
+  return L;
+}
 
 // [[Rcpp::export]]
 List sym_inverseRcpp(MatrixXd X) {
@@ -33,19 +39,19 @@ List sym_inverseRcpp(MatrixXd X) {
 }
 
 //[[Rcpp::export]]
-List RemlMMHen(VectorXd Y, MatrixXd X , MatrixXd Z , List GList , List GinvList , MatrixXd Rinv , VectorXd logdetV , VectorXd Init , int MaxIter , double Crit) {
-  List L = MM_RemlRcppHen(Y, X, Z , GList , GinvList , Rinv , logdetV , Init , MaxIter, Crit);
+List RemlMMHen(VectorXd Y, MatrixXd X , MatrixXd Z , List GList , List GinvList , MatrixXd Rinv , VectorXd logdetV , VectorXd Init , int MaxIter , double CritVar , double CritLogLik) {
+  List L = MM_RemlRcppHen(Y, X, Z , GList , GinvList , Rinv , logdetV , Init , MaxIter, CritVar, CritLogLik);
   return L;
 }
 //[[Rcpp::export]]
-List RemlMMHenDiag(VectorXd Y, MatrixXd X , MatrixXd Z , List GList , List GinvList , VectorXd Rinv , VectorXd logdetV , VectorXd Init , int MaxIter , double Crit) {
-  List L = MM_RemlRcppHenDiag(Y, X, Z , GList , GinvList , Rinv , logdetV , Init , MaxIter, Crit);
+List RemlMMHenDiag(VectorXd Y, MatrixXd X , MatrixXd Z , List GList , List GinvList , VectorXd Rinv , VectorXd logdetV , VectorXd Init , int MaxIter , double CritVar , double CritLogLik) {
+  List L = MM_RemlRcppHenDiag(Y, X, Z , GList , GinvList , Rinv , logdetV , Init , MaxIter, CritVar, CritLogLik);
   return L;
 }
 
 //[[Rcpp::export]]
-List MM_Reml2MatRcpp(VectorXd Y, MatrixXd X , MatrixXd U , VectorXd D , VectorXd Init , int MaxIter , double Crit) {
-  List L = MM_Reml2Mat(Y, X, U , D, Init , MaxIter, Crit);
+List MM_Reml2MatRcpp(VectorXd Y, MatrixXd X , MatrixXd U , VectorXd D , VectorXd Init , int MaxIter , double CritVar , double CritLogLik) {
+  List L = MM_Reml2Mat(Y, X, U , D, Init, MaxIter, CritVar, CritLogLik);
   return L;
 }
 
@@ -55,14 +61,14 @@ List PrepMat(VectorXd Y , MatrixXd K1 , MatrixXd K2){
 }
 
 //[[Rcpp::export]]
-List MM_ML2MatRcpp(VectorXd Y, MatrixXd X , MatrixXd U , VectorXd D, VectorXd Init , int MaxIter , double Crit) {
-  List L = MM_ML2Mat(Y, X, U, D , Init , MaxIter, Crit);
+List MM_ML2MatRcpp(VectorXd Y, MatrixXd X , MatrixXd U , VectorXd D, VectorXd Init , int MaxIter , double CritVar , double CritLogLik) {
+  List L = MM_ML2Mat(Y, X, U, D , Init , MaxIter, CritVar, CritLogLik);
   return L;
 }
 
 //[[Rcpp::export]]
-List MLMM(VectorXd Y, MatrixXd X , List VarList , VectorXd Init , int MaxIter , double Crit) {
-  List L = MM_MLRcpp(Y, X, VarList, Init , MaxIter, Crit);
+List MLMM(VectorXd Y, MatrixXd X , List VarList , VectorXd Init , int MaxIter , double CritVar , double CritLogLik) {
+  List L = MM_MLRcpp(Y, X, VarList, Init , MaxIter, CritVar, CritLogLik);
   return L;
 }
 
