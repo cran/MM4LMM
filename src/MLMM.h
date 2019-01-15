@@ -107,7 +107,7 @@ List MM_MLRcpp(VectorXd & Y, MatrixXd & X, List & VarList , VectorXd & Init , in
                 SigmaAnc = SigmaOld;
                 LogLik(iteration) = -(NbObs * log(2*M_PI) + logdetVar + (Y-X*Beta).transpose() * InvFixed)/2;
 
-    		critLL = LogLik(iteration) - LogLik(iteration-1); 
+    		if (iteration >0) critLL = LogLik(iteration) - LogLik(iteration-1); 
 
                 it ++;
                 iteration ++;

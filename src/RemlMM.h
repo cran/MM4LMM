@@ -111,7 +111,7 @@ List MM_RemlRcpp(VectorXd & Y, MatrixXd & X, List & VarList , VectorXd & Init , 
 		VectorXd DiffAbs = SigmaNew-SigmaOld;
 
    		crit = DiffAbs.lpNorm<Infinity>();
-    		critLL = LogLik(iteration) - LogLik(iteration-1);
+    		if (iteration >0) critLL = LogLik(iteration) - LogLik(iteration-1);
                 it ++;
                 if (it == 2 ){
 

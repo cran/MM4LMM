@@ -121,7 +121,7 @@ List MM_ML2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , Vec
 		VectorXd DiffAbs = SigmaNew-SigmaOld;
 
    		crit = DiffAbs.lpNorm<Infinity>();
-    		critLL = LogLik(iteration) - LogLik(iteration-1); 
+    		if (iteration >0) critLL = LogLik(iteration) - LogLik(iteration-1); 
                 
                 SigmaAnc = SigmaOld;
 

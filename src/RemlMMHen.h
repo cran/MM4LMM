@@ -234,7 +234,7 @@ List MM_RemlRcppHen(VectorXd & Y, MatrixXd & X, MatrixXd & Z , List & GList , Li
 		VectorXd DiffAbs = SigmaNew-SigmaOld;
 
     		crit = DiffAbs.lpNorm<Infinity>();
-    		critLL = LogLik(iteration) - LogLik(iteration-1);  
+    		if (iteration >0) critLL = LogLik(iteration) - LogLik(iteration-1);  
                 it ++;
                 if (it == 2 ){
 			SigmaNewBis = SigmaNew;
