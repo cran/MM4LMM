@@ -6,7 +6,7 @@
   Min-Max algorithms for Variance Component Mixed Model Inference.
 }
 \description{
-This package provides a function to perform either ML or ReML estimation in a Variance Component Mixed Model. The optimization of the (possibly Restricted) log-likelihood is perfomed using the Min-Max algorithm described in Hunter et al. (2004). Depending on the number of variance components, different computational tricks are used to speed up inference. Additionally, the \code{\link{AnovaTest}} function provides  Type I and Type III test series for fixed effects. The nullity of a specific linear combination can also be tested.  
+This package provides a function to perform either ML or ReML estimation in a Variance Component Mixed Model. The optimization of the (possibly Restricted) log-likelihood is perfomed using the Min-Max algorithm described in Hunter et al. (2004). Depending on the number of variance components, different computational tricks are used to speed up inference. Additionally, the \code{\link{AnovaTest}} function provides  Type I, Type III and Type III Kenward Roger approximation test series for fixed effects. The nullity of a specific linear combination can also be tested.  
 }
 \details{
   Variance Component Mixed Models are mixed models of the form
@@ -18,12 +18,14 @@ This package provides a function to perform either ML or ReML estimation in a Va
 \author{
 Fabien Laporte and Tristan Mary-Huard
 
-Maintainer: Fabien Laporte <fabien.laporte@inra.fr>
+Maintainer: Fabien Laporte <fabien.laporte@pasteur.fr>
 }
 \references{
 Johnson, D. L., & Thompson, R. (1995). Restricted maximum likelihood estimation of variance components for univariate animal models using sparse matrix techniques and average information. Journal of dairy science, 78(2), 449-456.
 
 Hunter, D. R., & Lange, K. (2004). A tutorial on MM algorithms. The American Statistician, 58(1), 30-37.
+
+Kenward, M. G., & Roger, J. H. (1997). Small sample inference for fixed effects from restricted maximum likelihood. Biometrics, 983-997.
 
 Varadhan, R., & Roland, C. (2008). Simple and globally convergent methods for accelerating the convergence of any EM algorithm. Scandinavian Journal of Statistics, 35(2), 335-353.
 

@@ -1,8 +1,12 @@
 AnovaTest <- 
-function(ResMMEst , TestedCombination=NULL , Type = "TypeIII" , NbCores=1){
+function(ResMMEst , TestedCombination=NULL , Type = "TypeIII" , Cofactor = NULL , X = NULL , formula = NULL , VarList = NULL , NbCores=1){
 
 	if (length(ResMMEst[[1]]) != 8) stop("ResMMEst should be the output of the function MMEst")
 
+  if (Type == "KR"){
+    return(.AnovaTest_KR(ResMMEst , TestedCombination , Cofactor , X , formula , VarList , NbCores))
+  }else{
+  
 	if (!is.null(TestedCombination)){
 		#message("Wald tests about the combination are computed")
 		if (is.matrix(TestedCombination)) TestedCombination <- list(TestedCombination)
@@ -51,7 +55,7 @@ function(ResMMEst , TestedCombination=NULL , Type = "TypeIII" , NbCores=1){
 				Beta <- x$Beta
 				Attr <- x$attr
 				CommonAttr <- lapply(unique(Attr) , function(y) which(Attr==y))
-				names(CommonAttr) <- c("(Intercept)",Factors[Attr[-1]])
+				names(CommonAttr) <- c("(Intercept)",Factors[unique(Attr)[-1]])
 
 				MatTI <- lapply(names(CommonAttr) , function(y){
 					mat <- as.numeric(1:length(Beta) %in% CommonAttr[[y]])
@@ -85,7 +89,7 @@ function(ResMMEst , TestedCombination=NULL , Type = "TypeIII" , NbCores=1){
 				Beta <- x$Beta
 				Attr <- x$attr
 				CommonAttr <- lapply(unique(Attr) , function(y) which(Attr==y))
-				names(CommonAttr) <- c("(Intercept)",Factors[Attr[-1]])
+				names(CommonAttr) <- c("(Intercept)",Factors[unique(Attr)[-1]])
 				MatTIII <- lapply(names(CommonAttr) , function(y){
 					EffectSelected <- CommonAttr[[y]]
 					mat <- t(sapply(EffectSelected , function(z) as.numeric(1:length(Beta)==z)))
@@ -118,8 +122,9 @@ function(ResMMEst , TestedCombination=NULL , Type = "TypeIII" , NbCores=1){
 		if ((Type!="TypeI")&&(Type!="TypeIII")) warning("AnovaTest computes TypeI or TypeIII test when TestedCombination is NULL")
 	}
 	CompNA <- sum(unlist(mclapply(Res,function(x) sum(is.na(x[,2])) , mc.cores=NbCores)))
-	if (CompNA > 0) message(paste0(CompNA," tests were not compute because of incompatible dimension"))
+	if (CompNA > 0) message(paste0(CompNA," tests were not performed because of incompatible dimension"))
 	return(Res)
+  }
 }
 
 

@@ -90,9 +90,7 @@ List MM_Reml2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , V
    
 		if (iteration > 0){
 			if (LogLik(iteration) < LogLik(iteration - 1)){
-			  Rcout << "Aie" << std::endl;
-			  Rcout << "iteration = " << iteration << std::endl;
-			  
+
 				deltaNew = deltaNewBis;
 				Var = deltaNew * D + I;
 				Var_inv = Var.cwiseInverse();

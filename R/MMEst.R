@@ -119,10 +119,7 @@ MMEst <-
         		VarInv <- 1/VarList[[NbZ]]
 			logdetVar <- sum(log(Tmp))
 		}else{
-		  ptm <- proc.time()
 			Tmp <- .sym_inverseRcpp(tcrossprod( tcrossprod(ZList[[1]] , VarList[[1]]) ,ZList[[1]]))
-			Time <- proc.time()-ptm
-			print(Time)
 			VarInv <- Tmp$inverse
 			logdetVar <- Tmp$log_det
 		}
