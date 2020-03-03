@@ -24,7 +24,7 @@ MMEst <-
     
     ## Comparison Y and X
     if ((length(X)!=0)){
-      if (class(X)=="matrix"){
+      if (is.matrix(X)){
         if (nrow(X)!=Nind){
           stop("Incompatible dimension between Y and X")
         }
