@@ -34,7 +34,7 @@ MMEst(Y, Cofactor = NULL, X = NULL, formula=NULL, VarList, ZList = NULL, Method 
 }
 
   \item{VarList}{
-	A list of correlation matrices associated with random and residual effects.
+	A list of covariance matrices associated with random and residual effects.
 %%     ~~Describe \code{VarList} here~~
 }
   \item{ZList}{
