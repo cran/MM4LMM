@@ -18,7 +18,7 @@ typedef Map<MatrixXd> Map_MatrixXd;
 
 
 
-List MM_Reml2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , VectorXd & Init , int MaxIter, double CritVar , double CritLogLik){
+List MM_Reml2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, double & logdetU, VectorXd & D , VectorXd & Init , int MaxIter, double CritVar , double CritLogLik){
         int NbObs(Y.size());
 	MatrixXd X = U*Xinit;
 	int NbCof(Xinit.cols());
@@ -86,7 +86,7 @@ List MM_Reml2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , V
 		SigmaNew(0) = deltaOld * SigmaNew(1);
 
 		
-		LogLik(iteration) = -((NbObs-NbCof)*log(SigmaNew(1)) + logdetxVarx + logdetVar + A / SigmaNew(1))/2;
+		LogLik(iteration) = -((NbObs-NbCof)*log(SigmaNew(1)) + logdetxVarx + logdetVar + logdetU + A / SigmaNew(1))/2;
    
 		if (iteration > 0){
 			if (LogLik(iteration) < LogLik(iteration - 1)){
@@ -118,7 +118,7 @@ List MM_Reml2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , V
 				SigmaNew(1) = A/(NbObs-NbCof);		
 				SigmaNew(0) = deltaOld * SigmaNew(1);
 
-				LogLik(iteration) = -((NbObs-NbCof)*log(SigmaNew(1)) + logdetxVarx + logdetVar + (Y.transpose() * InvFixed).sum() / SigmaNew(1))/2;
+				LogLik(iteration) = -((NbObs-NbCof)*log(SigmaNew(1)) + logdetxVarx + logdetVar + logdetU + (Y.transpose() * InvFixed).sum() / SigmaNew(1))/2;
                 	}
 		}
 			 
@@ -165,7 +165,7 @@ List MM_Reml2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , V
 	SigmaNew(1) = (Y.transpose() * InvFixed).sum() / (NbObs - NbCof);
 	SigmaNew(0) = deltaNew * SigmaNew(1);	
 
-	LogLik(iteration) = -((NbObs-NbCof)*log(SigmaNew(1)) + logdetxVarx + logdetVar + (Y.transpose() * InvFixed).sum() / SigmaNew(1))/2;	
+	LogLik(iteration) = -((NbObs-NbCof)*log(SigmaNew(1)) + logdetxVarx + logdetVar + logdetU + (Y.transpose() * InvFixed).sum() / SigmaNew(1))/2;	
 	double LogLikRestrain = LogLik(iteration);
         
 	Beta = xVarx_inv.selfadjointView<Lower>() * (Varx.transpose() * Y);

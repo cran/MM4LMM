@@ -36,7 +36,7 @@ The list contains three elements:
 }
 %%  ~~ If necessary, more details than the __description__ above ~~
 }
-\source{\url{https://www.genetics.org/content/207/3/1167.figures-only}
+\source{\url{https://academic.oup.com/genetics/article/207/3/1167/5930743}
 %%  ~~ reference to a publication or URL from which the data were obtained ~~
 }
 \references{Giraud, H., Bauland, C., Falque, M., Madur, D., Combes, V., Jamin, P., ... & Blanchard, P. (2017). Reciprocal Genetics: Identifying QTL for General and Specific Combining Abilities in Hybrids Between Multiparental Populations from Two Maize (Zea mays L.) Heterotic Groups. Genetics, 207(3), 1167-1180.

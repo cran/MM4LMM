@@ -17,7 +17,7 @@ using namespace Eigen;
 typedef Map<MatrixXd> Map_MatrixXd;
 
 
-List MM_ML2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , VectorXd & Init , int MaxIter, double CritVar, double CritLogLik){
+List MM_ML2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U , double & logdetU, VectorXd & D , VectorXd & Init , int MaxIter, double CritVar, double CritLogLik){
 	int NbVar = 2; 
         int NbObs(Y.size());
 	MatrixXd X = U*Xinit;
@@ -58,7 +58,7 @@ List MM_ML2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , Vec
 
         	VectorXd InvFixed = Var_inv.asDiagonal() * (Y - X*Beta) ;
 	
-                LogLik(iteration) = -(NbObs * log(2*M_PI) + logdetVar + (Y-X*Beta).transpose() * InvFixed)/2;
+                LogLik(iteration) = -(NbObs * log(2*M_PI) + logdetVar + logdetU  + (Y-X*Beta).transpose() * InvFixed)/2;
 
 		if (iteration > 0){
 			if (LogLik(iteration) < LogLik(iteration-1)){
@@ -77,7 +77,7 @@ List MM_ML2Mat(VectorXd & Y, MatrixXd & Xinit , MatrixXd & U, VectorXd & D , Vec
 
         			VectorXd InvFixed = Var_inv.asDiagonal() * (Y - X*Beta) ;
 	
-                		LogLik(iteration) = -(NbObs * log(2*M_PI) + logdetVar + (Y-X*Beta).transpose() * InvFixed)/2;
+                		LogLik(iteration) = -(NbObs * log(2*M_PI) + logdetVar + logdetU + (Y-X*Beta).transpose() * InvFixed)/2;
 			}
 		}
 

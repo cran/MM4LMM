@@ -1,10 +1,10 @@
 MMEst <-
-  function(Y , Cofactor=NULL , X=NULL , formula = NULL , VarList , ZList=NULL , Method="Reml" , Henderson = NULL , Init=NULL , CritVar=1e-3 , CritLogLik = 1e-3 , MaxIter=100 , NbCores=1){
+  function(Y , Cofactor=NULL , X=NULL , formula = NULL , VarList , ZList=NULL , Method="Reml" , Henderson = NULL , Init=NULL , CritVar=1e-3 , CritLogLik = 1e-3 , MaxIter=100 , NbCores=1 , Verbose=TRUE){
     
     if (Sys.info()[['sysname']]=="Windows"){
       if (NbCores!=1){
         NbCores <- 1
-        message("NbCores > 1 is not supported on Windows (mclapply), NbCores is set to 1")
+        if (Verbose) message("NbCores > 1 is not supported on Windows (mclapply), NbCores is set to 1")
       }
     }
     
@@ -29,7 +29,7 @@ MMEst <-
           stop("Incompatible dimension between Y and X")
         }
       }else{
-        if (class(X)=="list"){
+        if (is.list(X)){
           invisible(mclapply(X , function(x) {
             if (nrow(x)!=Nind){
               stop("Incompatible dimension between Y and a matrix in the list X")
@@ -92,13 +92,14 @@ MMEst <-
     }else{
       SplitForm <- strsplit(as.character(formula)," \\+ ")
       Factors <- SplitForm[[length(SplitForm)]]
+      if (!("1" %in% Factors)) Factors <- c("1",Factors)
       WhatInX <- unique(unlist(sapply(Xname,function(n) grep(n,Factors))))
       if (length(WhatInX)!=0){
         formulaCof <- as.formula(paste0("~",Factors[-WhatInX],collapse="+"))
       }else{
         formulaCof <- as.formula(paste0("~",Factors,collapse="+"))
       }
-      formulaComp <- formula
+      formulaComp <- as.formula(paste0("~",Factors,collapse="+"))
     }
     
     
@@ -116,7 +117,7 @@ MMEst <-
 		Rdiag <- isDiagonal(ZList[[NbZ]])&&isDiagonal(VarList[[NbZ]])
 		if (Rdiag){
 			Tmp <- diag(ZList[[1]])^2*diag(VarList[[1]])
-        		VarInv <- 1/VarList[[NbZ]]
+        		VarInv <- diag(1/Tmp)
 			logdetVar <- sum(log(Tmp))
 		}else{
 			Tmp <- .sym_inverseRcpp(tcrossprod( tcrossprod(ZList[[1]] , VarList[[1]]) ,ZList[[1]]))
@@ -177,14 +178,16 @@ MMEst <-
       
       if (Method=="Reml"){
         if (NbVar==2){
-          if(Henderson) message("Henderson's trick is not implemented for 2 variance components, joint diagonalization trick is used")
+	  PosDef <- (is.positive.definite(VarList[[1]]) & is.positive.definite(VarList[[2]]))
+	  if ((!PosDef)&(Verbose)) message("Matrices are not positive definite. Results can be wrong or NaN can be produced.")
+          if ((Henderson)&(Verbose)) message("Henderson's trick is not implemented for 2 variance components, joint diagonalization trick is used")
           InfMethod <- .MM_Reml2Mat
         }else{
           
           InfMethod <- .MM_Reml
         }
       }else{
-        if (Henderson) message("Henderson's trick is not available for ML inference, classical MM is used")
+        if ((Henderson)&(Verbose)) message("Henderson's trick is not available for ML inference, classical MM is used")
         if (NbVar==2){
           InfMethod <- .MM_ML2Mat
         }else{

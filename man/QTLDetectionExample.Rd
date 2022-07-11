@@ -30,7 +30,7 @@ The list contains three elements:
 }
 %%  ~~ If necessary, more details than the __description__ above ~~
 }
-\source{\url{https://link.springer.com/article/10.1007\%2Fs00122-014-2379-7}
+\source{\url{https://link.springer.com/article/10.1007/s00122-014-2379-7}
 %%  ~~ reference to a publication or URL from which the data were obtained ~~
 }
 \references{Rincent, R., Nicolas, S., Bouchet, S., Altmann, T., Brunel, D., Revilla, P., ... & Schipprack, W. (2014). Dent and Flint maize diversity panels reveal important genetic potential for increasing biomass production. Theoretical and applied genetics, 127(11), 2313-2331.

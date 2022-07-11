@@ -12,7 +12,7 @@ This is the main function of the \cite{MM4LMM} package. It performs inference  i
 \usage{
 MMEst(Y, Cofactor = NULL, X = NULL, formula=NULL, VarList, ZList = NULL, Method = "Reml",
 	Henderson=NULL, Init = NULL, CritVar = 0.001, CritLogLik = 0.001,
-	MaxIter = 100, NbCores = 1)
+	MaxIter = 100, NbCores = 1, Verbose = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -68,6 +68,9 @@ MMEst(Y, Cofactor = NULL, X = NULL, formula=NULL, VarList, ZList = NULL, Method 
 	Number of cores to be used. 
 %%     ~~Describe \code{NbCores} here~~
 }
+  \item{Verbose}{
+  A boolean describing if messages have to be printed (TRUE) or not (FALSE). Default is TRUE.
+}
 }
 \details{
 	If \code{X} is \code{NULL}, the following model is fitted:
@@ -88,7 +91,7 @@ The result is a list where each element corresponds to a fitted model. Each elem
 \item{Beta }{Estimated values of \eqn{\beta_C} and \eqn{\beta_{i}}}
 \item{Sigma2 }{Estimated values of \eqn{\sigma_1^2,...,\sigma_K^2}}
 \item{VarBeta }{Variance matrix of \code{Beta}}
-\item{LogLik (\code{Method}) }{The value of the (restricted, if \code{Method} is "Reml") log-likelihood}
+\item{LogLik (Method) }{The value of the (restricted, if \code{Method} is "Reml") log-likelihood}
 \item{NbIt }{The number of iterations required to reach the optimum}
 \item{Method }{The method used for the inference}
 \item{attr }{An integer vector with an entry for each element of \code{Beta} giving the term in \code{Factors} which gave rise to this element (for internal use in the function \code{\link{AnovaTest}})}
@@ -100,6 +103,8 @@ The result is a list where each element corresponds to a fitted model. Each elem
 %% ...
 }
 \references{
+Laporte, F., Charcosset, A., & Mary-Huard, T. (2022). Efficient ReML inference in variance component mixed models using a Min-Max algorithm. PLOS Computational Biology, 18(1), e1009659.
+
 Johnson, D. L., & Thompson, R. (1995). Restricted maximum likelihood estimation of variance components for univariate animal models using sparse matrix techniques and average information. Journal of dairy science, 78(2), 449-456.
 
 Hunter, D. R., & Lange, K. (2004). A tutorial on MM algorithms. The American Statistician, 58(1), 30-37.

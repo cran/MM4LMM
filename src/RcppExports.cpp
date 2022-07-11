@@ -19,20 +19,21 @@ RcppExport SEXP _MM4LMM_chol_inverse(SEXP XSEXP) {
   END_RCPP
 }
 // MM_ML2MatRcpp
-List MM_ML2MatRcpp(VectorXd Y, MatrixXd X, MatrixXd U, VectorXd D, VectorXd Init, int MaxIter, double CritVar , double CritLogLik);
-RcppExport SEXP _MM4LMM_MM_ML2MatRcpp(SEXP YSEXP, SEXP XSEXP, SEXP USEXP, SEXP DSEXP, SEXP InitSEXP, SEXP MaxIterSEXP, SEXP CritVarSEXP, SEXP CritLogLikSEXP) {
+List MM_ML2MatRcpp(VectorXd Y, MatrixXd X, MatrixXd U, double logdetU, VectorXd D, VectorXd Init, int MaxIter, double CritVar , double CritLogLik);
+RcppExport SEXP _MM4LMM_MM_ML2MatRcpp(SEXP YSEXP, SEXP XSEXP, SEXP USEXP, SEXP logdetUSEXP, SEXP DSEXP, SEXP InitSEXP, SEXP MaxIterSEXP, SEXP CritVarSEXP, SEXP CritLogLikSEXP) {
   BEGIN_RCPP
   Rcpp::RObject rcpp_result_gen;
   Rcpp::RNGScope rcpp_rngScope_gen;
   Rcpp::traits::input_parameter< VectorXd >::type Y(YSEXP);
   Rcpp::traits::input_parameter< MatrixXd >::type X(XSEXP);
   Rcpp::traits::input_parameter< MatrixXd >::type U(USEXP);
+  Rcpp::traits::input_parameter< double >::type logdetU(logdetUSEXP);
   Rcpp::traits::input_parameter< VectorXd >::type D(DSEXP);
   Rcpp::traits::input_parameter< VectorXd >::type Init(InitSEXP);
   Rcpp::traits::input_parameter< int >::type MaxIter(MaxIterSEXP);
   Rcpp::traits::input_parameter< double >::type CritVar(CritVarSEXP);
   Rcpp::traits::input_parameter< double >::type CritLogLik(CritLogLikSEXP);
-  rcpp_result_gen = Rcpp::wrap(MM_ML2MatRcpp(Y, X, U, D, Init, MaxIter, CritVar, CritLogLik));
+  rcpp_result_gen = Rcpp::wrap(MM_ML2MatRcpp(Y, X, U, logdetU, D, Init, MaxIter, CritVar, CritLogLik));
   return rcpp_result_gen;
   END_RCPP
 }
@@ -67,20 +68,21 @@ RcppExport SEXP _MM4LMM_PrepMat(SEXP YSEXP, SEXP K1SEXP, SEXP K2SEXP) {
   END_RCPP
 }
 // MM_Reml2MatRcpp
-List MM_Reml2MatRcpp(VectorXd Y, MatrixXd X, MatrixXd U, VectorXd D, VectorXd Init, int MaxIter, double CritVar , double CritLogLik);
-RcppExport SEXP _MM4LMM_MM_Reml2MatRcpp(SEXP YSEXP, SEXP XSEXP, SEXP USEXP, SEXP DSEXP, SEXP InitSEXP, SEXP MaxIterSEXP, SEXP CritVarSEXP, SEXP CritLogLikSEXP) {
+List MM_Reml2MatRcpp(VectorXd Y, MatrixXd X, MatrixXd U, double logdetU, VectorXd D, VectorXd Init, int MaxIter, double CritVar , double CritLogLik);
+RcppExport SEXP _MM4LMM_MM_Reml2MatRcpp(SEXP YSEXP, SEXP XSEXP, SEXP USEXP, SEXP logdetUSEXP, SEXP DSEXP, SEXP InitSEXP, SEXP MaxIterSEXP, SEXP CritVarSEXP, SEXP CritLogLikSEXP) {
   BEGIN_RCPP
   Rcpp::RObject rcpp_result_gen;
   Rcpp::RNGScope rcpp_rngScope_gen;
   Rcpp::traits::input_parameter< VectorXd >::type Y(YSEXP);
   Rcpp::traits::input_parameter< MatrixXd >::type X(XSEXP);
   Rcpp::traits::input_parameter< MatrixXd >::type U(USEXP);
+  Rcpp::traits::input_parameter< double >::type logdetU(logdetUSEXP);
   Rcpp::traits::input_parameter< VectorXd >::type D(DSEXP);
   Rcpp::traits::input_parameter< VectorXd >::type Init(InitSEXP);
   Rcpp::traits::input_parameter< int >::type MaxIter(MaxIterSEXP);
   Rcpp::traits::input_parameter< double >::type CritVar(CritVarSEXP);
   Rcpp::traits::input_parameter< double >::type CritLogLik(CritLogLikSEXP);
-  rcpp_result_gen = Rcpp::wrap(MM_Reml2MatRcpp(Y, X, U, D, Init, MaxIter, CritVar, CritLogLik));
+  rcpp_result_gen = Rcpp::wrap(MM_Reml2MatRcpp(Y, X, U, logdetU, D, Init, MaxIter, CritVar, CritLogLik));
   return rcpp_result_gen;
   END_RCPP
 }
@@ -171,10 +173,10 @@ RcppExport SEXP _MM4LMM_sym_inverseRcpp(SEXP XSEXP) {
 
 static const R_CallMethodDef CallEntries[] = {
   {"_MM4LMM_chol_inverse", (DL_FUNC) &_MM4LMM_chol_inverse, 1},
-  {"_MM4LMM_MM_ML2MatRcpp", (DL_FUNC) &_MM4LMM_MM_ML2MatRcpp, 8},
+  {"_MM4LMM_MM_ML2MatRcpp", (DL_FUNC) &_MM4LMM_MM_ML2MatRcpp, 9},
   {"_MM4LMM_MLMM", (DL_FUNC) &_MM4LMM_MLMM, 7},
   {"_MM4LMM_PrepMat", (DL_FUNC) &_MM4LMM_PrepMat, 3},
-  {"_MM4LMM_MM_Reml2MatRcpp", (DL_FUNC) &_MM4LMM_MM_Reml2MatRcpp, 8},
+  {"_MM4LMM_MM_Reml2MatRcpp", (DL_FUNC) &_MM4LMM_MM_Reml2MatRcpp, 9},
   {"_MM4LMM_RemlMM", (DL_FUNC) &_MM4LMM_RemlMM, 7},
   {"_MM4LMM_RemlMMHen", (DL_FUNC) &_MM4LMM_RemlMMHen, 11},
   {"_MM4LMM_RemlMMHenDiag", (DL_FUNC) &_MM4LMM_RemlMMHenDiag, 11},

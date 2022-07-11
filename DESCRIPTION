@@ -1,16 +1,17 @@
 Package: MM4LMM
 Type: Package
 Title: Inference of Linear Mixed Models Through MM Algorithm
-Version: 2.1.0
-Date: 2021-09-17
-Author: Fabien Laporte, Tristan Mary-Huard
+Version: 3.0.2
+Date: 2022-06-27
+Author: Fabien Laporte, Tristan Mary-Huard, GQMS CoreFunctions Team
 Maintainer: Fabien Laporte <fabien.laporte@outlook.com>
-Description: The main function MMEst() performs (Restricted) Maximum Likelihood in a variance component mixed models using a Min-Max (MM) algorithm (Hunter, D. R., & Lange, K. (2004) <doi:10.1198/0003130042836>).
+Description: The main function MMEst() performs (Restricted) Maximum Likelihood in a variance component mixed models using a Min-Max (MM) algorithm (Laporte, F., Charcosset, A. & Mary-Huard, T. (2022) <doi:10.1371/journal.pcbi.1009659>).
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.12.13), Matrix, parallel, stats, MASS, utils
+Imports: Rcpp (>= 0.12.13), Matrix, parallel, stats, MASS, utils,
+        dplyr, purrr, corpcor
 LinkingTo: Rcpp, RcppEigen
 NeedsCompilation: yes
-Packaged: 2021-09-17 13:37:01 UTC; falaport
+Packaged: 2022-07-11 14:42:09 UTC; laporte-f
 Depends: R (>= 2.10)
 Repository: CRAN
-Date/Publication: 2021-09-27 14:10:18 UTC
+Date/Publication: 2022-07-11 15:30:09 UTC

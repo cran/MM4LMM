@@ -21,6 +21,8 @@ Fabien Laporte and Tristan Mary-Huard
 Maintainer: Fabien Laporte <fabien.laporte@pasteur.fr>
 }
 \references{
+Laporte, F., Charcosset, A., & Mary-Huard, T. (2022). Efficient ReML inference in variance component mixed models using a Min-Max algorithm. PLOS Computational Biology, 18(1), e1009659.
+
 Johnson, D. L., & Thompson, R. (1995). Restricted maximum likelihood estimation of variance components for univariate animal models using sparse matrix techniques and average information. Journal of dairy science, 78(2), 449-456.
 
 Hunter, D. R., & Lange, K. (2004). A tutorial on MM algorithms. The American Statistician, 58(1), 30-37.

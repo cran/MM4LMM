@@ -29,7 +29,7 @@
       if (is.list(X)){
         Res <-  mclapply(X , function(x) {
           if (is.null(colnames(x))){
-            colnames(x) <- paste0("X",1:ncol(X))
+            colnames(x) <- paste0("X",1:ncol(x))
           }
           
           Mat <- cbind(Cofactor,x)
@@ -83,7 +83,8 @@
     List <- .PrepMat(Y , K1 , K2)
     Ytilde <- List$Ytilde
     Passage <- t(List$U)
-    
+    logdetU <- log(1/det(List$U)**2)
+ 
     if (is.null(names(VarList))){
       NamesSigma <- paste0("Var",1:length(VarList))
     }else{
@@ -97,7 +98,7 @@
       Fixed <- cbind(Tmp[,QR$pivot[1:QR$rank]])
       NamesFixed <- colnames(Fixed)
       
-      res <- .MM_ML2MatRcpp(Ytilde , Fixed , Passage , List$Diag , Init ,MaxIter, CritVar , CritLogLik)
+      res <- .MM_ML2MatRcpp(Ytilde , Fixed , Passage , logdetU , List$Diag , Init ,MaxIter, CritVar , CritLogLik)
       
       names(res$Beta) <- NamesFixed
       rownames(res$VarBeta) <- NamesFixed
@@ -110,7 +111,7 @@
       if (is.list(X)){
         Res <-  mclapply(X , function(x) {
           if (is.null(colnames(x))){
-            colnames(x) <- paste0("X",1:ncol(X))
+            colnames(x) <- paste0("X",1:ncol(x))
           }
           
           Mat <- cbind(Cofactor,x)
@@ -119,7 +120,7 @@
           Fixed <- cbind(Tmp[,QR$pivot[1:QR$rank]])
           NamesFixed <- colnames(Fixed)
           
-          res <- .MM_ML2MatRcpp(Ytilde , Fixed , Passage , List$Diag , Init ,MaxIter, CritVar , CritLogLik)
+          res <- .MM_ML2MatRcpp(Ytilde , Fixed , Passage , logdetU , List$Diag , Init ,MaxIter, CritVar , CritLogLik)
           
           names(res$Beta) <- NamesFixed
           rownames(res$VarBeta) <- NamesFixed
@@ -139,7 +140,7 @@
           Fixed <- cbind(Tmp[,QR$pivot[1:QR$rank]])
           NamesFixed <- colnames(Fixed)
           
-          res <- .MM_ML2MatRcpp(Ytilde , Fixed , Passage , List$Diag , Init ,MaxIter, CritVar , CritLogLik)
+          res <- .MM_ML2MatRcpp(Ytilde , Fixed , Passage , logdetU , List$Diag , Init ,MaxIter, CritVar , CritLogLik)
           
           names(res$Beta) <- NamesFixed
           rownames(res$VarBeta) <- NamesFixed
@@ -183,7 +184,7 @@
       if (is.list(X)){
         Res <-  mclapply(X , function(x) {
           if (is.null(colnames(x))){
-            colnames(x) <- paste0("X",1:ncol(X))
+            colnames(x) <- paste0("X",1:ncol(x))
           }
           
           Mat <- cbind(Cofactor,x)
@@ -254,7 +255,7 @@
       if (is.list(X)){
         Res <-  mclapply(X , function(x) {
           if (is.null(colnames(x))){
-            colnames(x) <- paste0("X",1:ncol(X))
+            colnames(x) <- paste0("X",1:ncol(x))
           }
           
           Mat <- cbind(Cofactor,x)
@@ -311,7 +312,7 @@
     List <- .PrepMat(Y , K1 , K2)
     Ytilde <- List$Ytilde
     Passage <- t(List$U)
-    
+    logdetU <- log(1/det(List$U)**2) 
     
     
     
@@ -327,7 +328,7 @@
       Fixed <- cbind(Tmp[,QR$pivot[1:QR$rank]])
       NamesFixed <- colnames(Fixed)
       
-      res <- .MM_Reml2MatRcpp(Ytilde , Fixed , Passage , c(List$Diag) , Init ,MaxIter, CritVar , CritLogLik)
+      res <- .MM_Reml2MatRcpp(Ytilde , Fixed , Passage , logdetU , c(List$Diag) , Init ,MaxIter, CritVar , CritLogLik)
       
       names(res$Beta) <- NamesFixed
       rownames(res$VarBeta) <- NamesFixed
@@ -340,7 +341,7 @@
       if (is.list(X)){
         Res <-  mclapply(X , function(x) {
           if (is.null(colnames(x))){
-            colnames(x) <- paste0("X",1:ncol(X))
+            colnames(x) <- paste0("X",1:ncol(x))
           }
           
           Mat <- cbind(Cofactor,x)
@@ -350,7 +351,7 @@
           Fixed <- cbind(Tmp[,QR$pivot[1:QR$rank]])
           NamesFixed <- colnames(Fixed)
           
-          res <- .MM_Reml2MatRcpp(Ytilde , Fixed , Passage , c(List$Diag) , Init ,MaxIter, CritVar , CritLogLik)
+          res <- .MM_Reml2MatRcpp(Ytilde , Fixed , Passage , logdetU , c(List$Diag) , Init ,MaxIter, CritVar , CritLogLik)
           
           names(res$Beta) <- NamesFixed
           rownames(res$VarBeta) <- NamesFixed
@@ -371,7 +372,7 @@
           Fixed <- cbind(Tmp[,QR$pivot[1:QR$rank]])
           NamesFixed <- colnames(Fixed)
           
-          res <- .MM_Reml2MatRcpp(Ytilde , Fixed , Passage , c(List$Diag) , Init ,MaxIter, CritVar , CritLogLik)
+          res <- .MM_Reml2MatRcpp(Ytilde , Fixed , Passage , logdetU , c(List$Diag) , Init ,MaxIter, CritVar , CritLogLik)
           
           names(res$Beta) <- NamesFixed
           rownames(res$VarBeta) <- NamesFixed
@@ -414,7 +415,7 @@
       if (is.list(X)){
         Res <-  mclapply(X , function(x) {
           if (is.null(colnames(x))){
-            colnames(x) <- paste0("X",1:ncol(X))
+            colnames(x) <- paste0("X",1:ncol(x))
           }
           
           Mat <- cbind(Cofactor,x)
@@ -488,7 +489,7 @@
       if (is.list(X)){
         Res <-  mclapply(X , function(x) {
           if (is.null(colnames(x))){
-            colnames(x) <- paste0("X",1:ncol(X))
+            colnames(x) <- paste0("X",1:ncol(x))
           }
           
           Mat <- cbind(Cofactor,x)
@@ -813,3 +814,51 @@
   return(Res)
 }
 
+.GetFixedEffects <- function(Cofactor,fmla,Nind){
+  if (is.null(Cofactor)) {
+    Cofactor <- matrix(rep(1, Nind), ncol = 1)
+  }
+  if (is.vector(Cofactor)){
+    Cofactor <- matrix(Cofactor, ncol = 1)
+  } 
+  if ((length(Cofactor) != 0) * (Nind != nrow(Cofactor))) {
+    stop("Incompatible dimension between Y and Cofactor")
+  }
+  if (!is.data.frame(Cofactor)) {
+    if (!is.matrix(Cofactor)) {
+      stop("Cofactor should be either a matrix or a data.frame")
+    }
+    else {
+      Cofactor <- as.data.frame(Cofactor)
+      names(Cofactor) <- colnames(Cofactor)
+    }
+    Names <- names(Cofactor)
+    if (is.null(Names)) {
+      names(Cofactor) <- paste0("Cof", 1:ncol(Cofactor))
+    }
+    else {
+      names(Cofactor) <- gsub("([[:punct:]])|\\s+", "",Names)
+    }
+  }
+  CofName <- names(Cofactor)
+  if (is.null(fmla)) {
+    formulaCof <- as.formula(paste0("~", paste0(CofName, 
+                                                collapse = "+")))
+    formulaComp <- as.formula(paste0("~", paste0(CofName,
+                                                 collapse = "+")))
+    Factors <- c(CofName)
+  } else {
+    SplitForm <- strsplit(as.character(fmla), " \\+ ")
+    Factors <- SplitForm[[length(SplitForm)]]
+    formulaCof <- as.formula(paste0("~", Factors, collapse = "+"))
+    formulaComp <- fmla
+  }
+  Mat <- Cofactor
+  Tmp <- model.matrix(terms(formulaComp, keep.order = TRUE), 
+                      data = as.data.frame(Mat))
+  QR <- qr(Tmp)
+  Fixed <- cbind(Tmp[, QR$pivot[1:QR$rank]])
+  NamesFixed <- colnames(Fixed)
+  
+  return(Fixed)
+}

@@ -50,8 +50,8 @@ List RemlMMHenDiag(VectorXd Y, MatrixXd X , MatrixXd Z , List GList , List GinvL
 }
 
 //[[Rcpp::export]]
-List MM_Reml2MatRcpp(VectorXd Y, MatrixXd X , MatrixXd U , VectorXd D , VectorXd Init , int MaxIter , double CritVar , double CritLogLik) {
-  List L = MM_Reml2Mat(Y, X, U , D, Init, MaxIter, CritVar, CritLogLik);
+List MM_Reml2MatRcpp(VectorXd Y, MatrixXd X , MatrixXd U , double logdetU , VectorXd D , VectorXd Init , int MaxIter , double CritVar , double CritLogLik) {
+  List L = MM_Reml2Mat(Y, X, U, logdetU, D, Init, MaxIter, CritVar, CritLogLik);
   return L;
 }
 
@@ -61,8 +61,8 @@ List PrepMat(VectorXd Y , MatrixXd K1 , MatrixXd K2){
 }
 
 //[[Rcpp::export]]
-List MM_ML2MatRcpp(VectorXd Y, MatrixXd X , MatrixXd U , VectorXd D, VectorXd Init , int MaxIter , double CritVar , double CritLogLik) {
-  List L = MM_ML2Mat(Y, X, U, D , Init , MaxIter, CritVar, CritLogLik);
+List MM_ML2MatRcpp(VectorXd Y, MatrixXd X , MatrixXd U , double logdetU , VectorXd D, VectorXd Init , int MaxIter , double CritVar , double CritLogLik) {
+  List L = MM_ML2Mat(Y, X, U, logdetU, D , Init , MaxIter, CritVar, CritLogLik);
   return L;
 }
 
