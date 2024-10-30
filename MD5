@@ -1,12 +1,13 @@
-46ac5c35bc0f0918d018258b2e6c06ce *DESCRIPTION
+20615cd68d421da5dd3effb06ac9a0f6 *DESCRIPTION
 e921e32e8a81fa8ca6f05a3d7754f5b3 *NAMESPACE
-8f2bcf1d510b13717b0d99651f17be46 *R/AnovaTest.R
+57d825917eb5a7b4452b9880fd625cb3 *R/AnovaTest.R
 c1bc75504fd03d1651d4c3ffe4c0fc31 *R/Global.R
 ea3c2e823de0b33121bf6430f3b1dd86 *R/MM4LMM-internal.R
 d6c1e3e2b900fbb34282db48fdd59068 *R/MMBlup.R
-7120b3a206d7c5284f5ed7a1dcf6b002 *R/MMEst.R
+c9dcabe34a088f7fbb1a6210ad9ec5b0 *R/MMEst.R
 cea86159fa10d8d2c6a8e1b9993849b0 *R/MMVcov.R
 33a248020558ddab6be691b720bd24f2 *R/RcppExports.R
+20c8d3f97d93e2e318a22508275b5a02 *build/partial.rdb
 13c619b5bf034f9e60716b007c94391c *data/QTLDetectionExample.rda
 987d4a745ec8a29e7be552f354b0cd9c *data/VarianceComponentExample.rda
 86e42bb442daaaab771d99d9276d7699 *man/AnovaTest.Rd
@@ -15,7 +16,7 @@ cea86159fa10d8d2c6a8e1b9993849b0 *R/MMVcov.R
 105d16766cbb1cf2230bc0ce84fd8667 *man/MMEst.Rd
 ac35c6595a1168a5e37d390d93619a52 *man/MMVcov.Rd
 410197cd9400cf93d56fee4aa4c9cfea *man/QTLDetectionExample.Rd
-59bbb4de42a4ca0b4e91eee454794db3 *man/VarianceComponentExample.Rd
+75e9c73b51e3e56f53a532bb38fa4330 *man/VarianceComponentExample.Rd
 5a070d8122a8d9e34f9af00115d35641 *src/All.cpp
 fd821f6e47ec5dc6fa18c98f4801faf4 *src/Inversion.h
 c2b3ff6769d9be997b5ed2a0f10bd95e *src/MLMM.h

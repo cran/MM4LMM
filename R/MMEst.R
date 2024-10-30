@@ -92,10 +92,14 @@ MMEst <-
     }else{
       SplitForm <- strsplit(as.character(formula)," \\+ ")
       Factors <- SplitForm[[length(SplitForm)]]
-      if (!("1" %in% Factors)) Factors <- c("1",Factors)
+      #if (!("1" %in% Factors)) Factors <- c("1",Factors)
       WhatInX <- unique(unlist(sapply(Xname,function(n) grep(n,Factors))))
       if (length(WhatInX)!=0){
-        formulaCof <- as.formula(paste0("~",Factors[-WhatInX],collapse="+"))
+        if (length(Factors[-WhatInX])!=0){
+          formulaCof <- as.formula(paste0("~",Factors[-WhatInX],collapse="+"))
+        }else{
+          formulaCof <- as.formula("~ 1")
+        }
       }else{
         formulaCof <- as.formula(paste0("~",Factors,collapse="+"))
       }
